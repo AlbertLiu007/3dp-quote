@@ -244,7 +244,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-[1480px] px-5 py-4">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="flex items-center gap-4">
-              <Image src="/brand/unionam-logo.png" alt="UnionAM" width={186} height={56} priority className="h-10 w-auto" />
+              <Image src="/quote/brand/unionam-logo.png" alt="UnionAM" width={186} height={56} priority className="h-10 w-auto" />
               <div>
                 <div className="flex flex-wrap items-center gap-3">
                   <div className="text-lg font-black tracking-normal">{t.appTitle}</div>
