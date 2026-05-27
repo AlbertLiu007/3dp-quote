@@ -20,9 +20,9 @@ function formatNumber(value: number | null | undefined, language: 'zh' | 'en', f
   return value.toLocaleString(language === 'zh' ? 'zh-CN' : 'en-US', { maximumFractionDigits: digits, minimumFractionDigits: digits });
 }
 
-function formatMoney(valueCny: number, language: 'zh' | 'en') {
+function formatMoney(valueCny: number, language: 'zh' | 'en', rate: number) {
   if (language === 'en') {
-    return `$${cnyToUsd(valueCny).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}`;
+    return `$${cnyToUsd(valueCny, rate).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}`;
   }
   return `￥${Math.round(valueCny).toLocaleString('zh-CN')}`;
 }
@@ -122,7 +122,7 @@ export default function HomePage() {
     let cancelled = false;
     async function loadExchangeRate() {
       try {
-        const response = await fetch('/api/exchange-rate', { cache: 'no-store' });
+        const response = await fetch('/quote/api/exchange-rate', { cache: 'no-store' });
         if (!response.ok) throw new Error('exchange rate fetch failed');
         const data = (await response.json()) as ExchangeRate;
         if (!cancelled && data?.rate > 0) setExchangeRate(data);
@@ -169,25 +169,25 @@ export default function HomePage() {
       material: t.materialFormula(
         quote.estimatedWeightG ? quote.estimatedWeightG.toFixed(1) : t.fallback,
         Number(materialUnitPrice.toFixed(4)),
-        formatMoney(quote.materialCost, language),
+        formatMoney(quote.materialCost, language, exchangeRate.rate),
       ),
       surface: t.surfaceFormula(
         quote.surfaceAreaMm2 ? formatNumber(quote.surfaceAreaMm2, language, t.fallback, 0) : t.fallback,
         Number(surfaceUnitPrice.toFixed(6)),
-        formatMoney(quote.surfaceAreaCost, language),
+        formatMoney(quote.surfaceAreaCost, language, exchangeRate.rate),
       ),
       subtotal: t.subtotalFormula(
-        formatMoney(quote.materialCost, language),
-        formatMoney(quote.surfaceAreaCost, language),
-        formatMoney(quote.failureBuffer, language),
-        formatMoney(quote.subtotalCost, language),
+        formatMoney(quote.materialCost, language, exchangeRate.rate),
+        formatMoney(quote.surfaceAreaCost, language, exchangeRate.rate),
+        formatMoney(quote.failureBuffer, language, exchangeRate.rate),
+        formatMoney(quote.subtotalCost, language, exchangeRate.rate),
       ),
       final: t.finalFormula(
-        formatMoney(selectedMaterial.materialMinimumCharge, language),
-        formatMoney(quote.subtotalCost, language),
+        formatMoney(selectedMaterial.materialMinimumCharge, language, exchangeRate.rate),
+        formatMoney(quote.subtotalCost, language, exchangeRate.rate),
         Math.round(selectedMaterial.markupRate * 100),
         quantity,
-        formatMoney(quote.finalPrice, language),
+        formatMoney(quote.finalPrice, language, exchangeRate.rate),
       ),
     };
   }, [exchangeRate.rate, language, quantity, quote, selectedMaterial, t]);
@@ -386,7 +386,7 @@ export default function HomePage() {
           <section className="rounded-lg border border-slate-200 bg-white p-4">
             <div className="text-xs font-black uppercase text-slate-500">{t.estimatedQuote}</div>
             <div className="mt-2 flex items-end justify-between gap-3">
-              <div className="text-4xl font-black tracking-normal text-slate-950">{quote ? formatMoney(quote.finalPrice, language) : (language === 'zh' ? '￥--' : '$--')}</div>
+              <div className="text-4xl font-black tracking-normal text-slate-950">{quote ? formatMoney(quote.finalPrice, language, exchangeRate.rate) : (language === 'zh' ? '￥--' : '$--')}</div>
               <label className="grid gap-1 text-xs font-bold text-slate-500">
                 {t.quantity}
                 <input
@@ -401,7 +401,7 @@ export default function HomePage() {
             <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
               <div className="rounded-md bg-slate-50 p-3">
                 <div className="font-bold text-slate-500">{t.unitPrice}</div>
-                <div className="mt-1 text-base font-black">{quote ? formatMoney(quote.unitPrice, language) : '--'}</div>
+                <div className="mt-1 text-base font-black">{quote ? formatMoney(quote.unitPrice, language, exchangeRate.rate) : '--'}</div>
               </div>
               <div className="rounded-md bg-slate-50 p-3">
                 <div className="font-bold text-slate-500">{t.weight}</div>
@@ -442,7 +442,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="ml-auto flex shrink-0 items-center gap-2">
-                  <span className="min-w-16 text-right text-base font-black text-slate-950">{quote ? formatMoney(quote.finalPrice, language) : '--'}</span>
+                  <span className="min-w-16 text-right text-base font-black text-slate-950">{quote ? formatMoney(quote.finalPrice, language, exchangeRate.rate) : '--'}</span>
                   <ChevronDown className={`h-4 w-4 text-slate-500 transition ${materialOpen ? 'rotate-180' : ''}`} />
                 </div>
               </button>
@@ -468,7 +468,7 @@ export default function HomePage() {
                               {language === 'en' ? material.descriptionEn ?? material.description : material.description}
                             </div>
                           </div>
-                          <div className="ml-auto min-w-16 shrink-0 text-right text-base font-black text-slate-950">{previewQuote ? formatMoney(previewQuote.finalPrice, language) : '--'}</div>
+                          <div className="ml-auto min-w-16 shrink-0 text-right text-base font-black text-slate-950">{previewQuote ? formatMoney(previewQuote.finalPrice, language, exchangeRate.rate) : '--'}</div>
                         </button>
                       );
                     })}
