@@ -1,0 +1,8 @@
+{
+  "base": "USD",
+  "quote": "CNY",
+  "rate": 6.7873,
+  "source": "fallback",
+  "fetchedAt": "2026-05-27T08:00:00+08:00",
+  "isFallback": true
+}
