@@ -27,6 +27,9 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@unionam/shared-i18n": [
+        "./packages/shared-i18n/src/index.ts"
       ]
     }
   },
