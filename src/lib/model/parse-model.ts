@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
+import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader.js';
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
 import { ThreeMFLoader } from 'three/examples/jsm/loaders/3MFLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
@@ -87,6 +88,12 @@ export async function parseModelBuffer(buffer: ArrayBuffer, format: ModelFormat)
   if (format === 'obj') {
     const text = new TextDecoder().decode(buffer);
     return new OBJLoader().parse(text);
+  }
+
+  if (format === 'ply') {
+    const geometry = new PLYLoader().parse(buffer);
+    geometry.computeVertexNormals();
+    return new THREE.Mesh(geometry, createModelMaterial('#d9eef5'));
   }
 
   if (format === '3mf') {

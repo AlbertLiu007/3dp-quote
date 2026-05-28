@@ -1,6 +1,6 @@
 import type * as THREE from 'three';
 
-export type ModelFormat = 'stl' | 'obj' | '3mf' | 'glb' | 'gltf' | 'step' | 'stp' | 'iges' | 'igs';
+export type ModelFormat = 'stl' | 'obj' | 'ply' | '3mf' | 'glb' | 'gltf' | 'step' | 'stp' | 'iges' | 'igs';
 
 export type ParsedModel = {
   fileName: string;
@@ -27,6 +27,7 @@ export function getModelFormat(fileName: string): ModelFormat {
   if (
     extension === 'stl' ||
     extension === 'obj' ||
+    extension === 'ply' ||
     extension === '3mf' ||
     extension === 'glb' ||
     extension === 'gltf' ||
@@ -37,7 +38,7 @@ export function getModelFormat(fileName: string): ModelFormat {
   ) {
     return extension;
   }
-  throw new Error('暂不支持该模型格式。请使用 STL、OBJ、3MF、GLB、STEP 或 IGES 文件。');
+  throw new Error('暂不支持该模型格式。请使用 STL、OBJ、PLY、3MF、GLB、STEP 或 IGES 文件。');
 }
 
 export function isCadModelFormat(format: string): format is Extract<ModelFormat, 'step' | 'stp' | 'iges' | 'igs'> {

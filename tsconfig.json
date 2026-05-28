@@ -30,6 +30,9 @@
       ],
       "@unionam/shared-i18n": [
         "./packages/shared-i18n/src/index.ts"
+      ],
+      "@unionam/shared-ui": [
+        "./packages/shared-ui/src/index.ts"
       ]
     }
   },

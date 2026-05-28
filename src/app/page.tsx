@@ -1,7 +1,7 @@
 'use client';
 
-import { CheckCircle2, ChevronDown, Copy, FileUp, Globe2, Languages, RotateCcw } from 'lucide-react';
-import Image from 'next/image';
+import { CheckCircle2, ChevronDown, Copy, FileUp, RotateCcw } from 'lucide-react';
+import { ToolHeader } from '@unionam/shared-ui';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type * as THREE from 'three';
 import { ThreeModelViewer } from '@/components/model-viewer/three-model-viewer';
@@ -108,11 +108,14 @@ export default function HomePage() {
   const [progressPercent, setProgressPercent] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [materialOpen, setMaterialOpen] = useState(false);
-  const [languageOpen, setLanguageOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [exchangeRate, setExchangeRate] = useState<ExchangeRate>(fallbackExchangeRate);
 
   const selectedMaterial = materials.find((material) => material.id === selectedMaterialId) ?? materials[0];
+  const navItems = [
+    { label: t.navQuote, href: 'https://unionam.com/quote', active: true },
+    { label: t.navConverter, href: 'https://unionam.com/converter' },
+  ];
 
   useEffect(() => {
     if (!modelObject && !error && progressPercent === null) setStatus(t.initialStatus);
@@ -240,58 +243,19 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-slate-100 text-slate-950">
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto max-w-[1480px] px-5 py-4">
-          <div className="flex flex-wrap items-start justify-between gap-3">
-            <div className="flex items-center gap-4">
-              <Image src="/quote/brand/unionam-logo.png" alt="UnionAM" width={186} height={56} priority className="h-10 w-auto" />
-              <div>
-                <div className="flex flex-wrap items-center gap-3">
-                  <div className="text-lg font-black tracking-normal">{t.appTitle}</div>
-                </div>
-                <div className="mt-0.5 text-xs font-medium text-slate-500">{t.appSubtitle}</div>
-              </div>
-            </div>
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setLanguageOpen((value) => !value)}
-                className="inline-flex h-10 items-center gap-2 rounded-md bg-[#0b4f9c] px-3 text-sm font-black text-white shadow-sm transition hover:bg-[#083f7e]"
-              >
-                <Globe2 className="h-4 w-4" />
-                <span>{language === 'zh' ? '中文' : 'English'}</span>
-                <ChevronDown className={`h-4 w-4 transition ${languageOpen ? 'rotate-180' : ''}`} />
-              </button>
-              {languageOpen ? (
-                <div className="absolute right-0 top-[calc(100%+6px)] z-50 w-36 rounded-md border border-slate-200 bg-white p-2 shadow-xl">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setLanguage('zh');
-                      setLanguageOpen(false);
-                    }}
-                    className={`flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm font-bold ${language === 'zh' ? 'text-[#0b4f9c]' : 'text-slate-950 hover:bg-slate-50'}`}
-                  >
-                    <Languages className="h-4 w-4" />
-                    中文
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setLanguage('en');
-                      setLanguageOpen(false);
-                    }}
-                    className={`mt-1 flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm font-bold ${language === 'en' ? 'text-[#0b4f9c]' : 'text-slate-950 hover:bg-slate-50'}`}
-                  >
-                    <Languages className="h-4 w-4" />
-                    English
-                  </button>
-                </div>
-              ) : null}
-            </div>
-          </div>
-        </div>
-      </header>
+      <ToolHeader
+        language={language}
+        labels={{
+          appTitle: t.appTitle,
+          appSubtitle: t.appSubtitle,
+          languageZh: '中文',
+          languageEn: 'English',
+        }}
+        logoSrc="/quote/brand/unionam-logo.png"
+        homeHref="https://unionam.com/"
+        navItems={navItems}
+        onLanguageChange={setLanguage}
+      />
 
       <div className="mx-auto grid max-w-[1480px] items-start gap-4 px-5 py-5 lg:grid-cols-[minmax(0,1fr)_430px]">
         <section className="grid gap-2">
