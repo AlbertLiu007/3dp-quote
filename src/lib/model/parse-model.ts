@@ -35,7 +35,7 @@ async function getOcct() {
     occtPromise = import('occt-import-js').then((module) => {
       const factory = (module.default ?? module) as OcctImportFactory;
       return factory({
-        locateFile: (path: string) => `/vendor/${path}`,
+        locateFile: (path: string) => `/quote/vendor/${path}`,
       });
     });
   }
