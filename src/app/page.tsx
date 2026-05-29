@@ -251,7 +251,7 @@ export default function HomePage() {
           languageZh: '中文',
           languageEn: 'English',
         }}
-        logoSrc="/quote/brand/unionam-logo.png"
+        logoSrc="/brand/unionam-logo.png"
         homeHref="https://unionam.com/"
         navItems={navItems}
         onLanguageChange={setLanguage}

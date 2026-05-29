@@ -1,8 +1,7 @@
 {
   "base": "USD",
   "quote": "CNY",
-  "rate": 6.7873,
-  "source": "fallback",
-  "fetchedAt": "2026-05-27T08:00:00+08:00",
-  "isFallback": true
+  "rate": 6.793906,
+  "source": "https://open.er-api.com/v6/latest/USD",
+  "fetchedAt": "2026-05-29T08:00:02.635+08:00"
 }
