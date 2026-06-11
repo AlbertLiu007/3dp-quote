@@ -4,17 +4,20 @@ import type { ModelMeasurement } from './model-types';
 const a = new THREE.Vector3();
 const b = new THREE.Vector3();
 const c = new THREE.Vector3();
+const volumeCross = new THREE.Vector3();
+const areaEdgeA = new THREE.Vector3();
+const areaEdgeB = new THREE.Vector3();
 
 function readTriangleVertex(position: THREE.BufferAttribute | THREE.InterleavedBufferAttribute, vertexIndex: number, matrix: THREE.Matrix4, target: THREE.Vector3) {
   return target.fromBufferAttribute(position, vertexIndex).applyMatrix4(matrix);
 }
 
 function signedTetrahedronVolume(v0: THREE.Vector3, v1: THREE.Vector3, v2: THREE.Vector3) {
-  return v0.dot(b.copy(v1).cross(v2)) / 6;
+  return v0.dot(volumeCross.copy(v1).cross(v2)) / 6;
 }
 
 function triangleArea(v0: THREE.Vector3, v1: THREE.Vector3, v2: THREE.Vector3) {
-  return b.copy(v1).sub(v0).cross(c.copy(v2).sub(v0)).length() / 2;
+  return areaEdgeA.copy(v1).sub(v0).cross(areaEdgeB.copy(v2).sub(v0)).length() / 2;
 }
 
 function measureGeometry(mesh: THREE.Mesh) {
