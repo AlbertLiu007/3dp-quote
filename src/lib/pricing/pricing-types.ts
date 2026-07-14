@@ -6,6 +6,7 @@ export type MaterialProfile = {
   id: string;
   name: string;
   process: PrintProcess;
+  processLabel?: string;
   description: string;
   descriptionEn?: string;
   densityGPerCm3: number;

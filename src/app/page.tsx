@@ -477,7 +477,7 @@ export default function HomePage() {
                     {selectedMaterial ? (
                       <span className="inline-flex max-w-full items-center gap-1.5">
                         {selectedMaterial.isElastic ? <span className="shrink-0 rounded-full bg-orange-100 px-1.5 py-0.5 text-[10px] font-black text-orange-700">{t.elasticMaterial}</span> : null}
-                        <span className="truncate">{`${selectedMaterial.name} - ${selectedMaterial.process.toUpperCase()}`}</span>
+                        <span className="truncate">{`${selectedMaterial.name} - ${selectedMaterial.processLabel ?? selectedMaterial.process.toUpperCase()}`}</span>
                       </span>
                     ) : t.selectMaterial}
                   </div>
@@ -514,7 +514,7 @@ export default function HomePage() {
                           <div className="min-w-0">
                             <div className="flex min-w-0 items-center gap-1.5">
                               {material.isElastic ? <span className="shrink-0 rounded-full bg-orange-100 px-1.5 py-0.5 text-[10px] font-black text-orange-700">{t.elasticMaterial}</span> : null}
-                              <div className="truncate text-sm font-black text-slate-950">{material.name} - {material.process.toUpperCase()}</div>
+                              <div className="truncate text-sm font-black text-slate-950">{material.name} - {material.processLabel ?? material.process.toUpperCase()}</div>
                             </div>
                             <div className="mt-1 line-clamp-1 text-xs font-medium text-slate-500" title={language === 'en' ? material.descriptionEn ?? material.description : material.description}>
                               {language === 'en' ? material.descriptionEn ?? material.description : material.description}
