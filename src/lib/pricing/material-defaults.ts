@@ -1,8 +1,44 @@
 import type { MaterialProfile } from './pricing-types';
 
-export const materialCatalogVersion = 2;
+export const materialCatalogVersion = 3;
 
 export const defaultMaterials: MaterialProfile[] = [
+  {
+    id: 'material-elast-r80',
+    name: '【弹性体】Elast R80',
+    process: 'sla',
+    description: '高回弹、高抗撕裂、强耐疲劳的双组分弹性体；邵氏硬度 A80，适合柔性功能件、缓冲件和护具',
+    descriptionEn: 'High-rebound, tear-resistant, fatigue-resistant two-component elastomer; Shore A80, suitable for flexible functional parts, cushioning parts, and protective gear',
+    densityGPerCm3: 0.98,
+    materialPricePerG: 1,
+    surfaceAreaPricePerMm2: 0.0001,
+    supportRate: 0,
+    failureRate: 0.06,
+    postProcessFee: 0,
+    materialMinimumCharge: 25,
+    markupRate: 0.3,
+    leadTimeDays: 2,
+    enabled: true,
+    isElastic: true,
+  },
+  {
+    id: 'material-elast-r60',
+    name: '【弹性体】Elast R60',
+    process: 'sla',
+    description: '高回弹、抗撕裂、耐疲劳的双组分弹性体；邵氏硬度 A62，回弹率 60%，适合解压玩具和柔性缓冲件',
+    descriptionEn: 'High-rebound, tear-resistant, fatigue-resistant two-component elastomer; Shore A62 with 60% rebound, suitable for stress-relief products and flexible cushioning parts',
+    densityGPerCm3: 0.99,
+    materialPricePerG: 0.8,
+    surfaceAreaPricePerMm2: 0.0001,
+    supportRate: 0,
+    failureRate: 0.06,
+    postProcessFee: 0,
+    materialMinimumCharge: 25,
+    markupRate: 0.3,
+    leadTimeDays: 2,
+    enabled: true,
+    isElastic: true,
+  },
   {
     id: 'material1',
     name: '【灰琉璃】UFS3009',
@@ -463,4 +499,3 @@ export const defaultMaterials: MaterialProfile[] = [
     enabled: true
   }
 ];
-

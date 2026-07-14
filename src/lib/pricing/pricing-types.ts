@@ -18,6 +18,7 @@ export type MaterialProfile = {
   markupRate: number;
   leadTimeDays: number;
   enabled: boolean;
+  isElastic?: boolean;
 };
 
 export type MaterialOverride = Partial<Omit<MaterialProfile, 'id'>>;

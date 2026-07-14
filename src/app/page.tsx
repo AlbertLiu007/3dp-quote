@@ -474,7 +474,12 @@ export default function HomePage() {
               >
                 <div className="min-w-0">
                   <div className="truncate text-sm font-black text-slate-950">
-                    {selectedMaterial ? `${selectedMaterial.name} - ${selectedMaterial.process.toUpperCase()}` : t.selectMaterial}
+                    {selectedMaterial ? (
+                      <span className="inline-flex max-w-full items-center gap-1.5">
+                        {selectedMaterial.isElastic ? <span className="shrink-0 rounded-full bg-orange-100 px-1.5 py-0.5 text-[10px] font-black text-orange-700">{t.elasticMaterial}</span> : null}
+                        <span className="truncate">{`${selectedMaterial.name} - ${selectedMaterial.process.toUpperCase()}`}</span>
+                      </span>
+                    ) : t.selectMaterial}
                   </div>
                   <div className="mt-1 line-clamp-1 text-xs font-medium text-slate-500" title={selectedMaterial ? (language === 'en' ? selectedMaterial.descriptionEn ?? selectedMaterial.description : selectedMaterial.description) : undefined}>
                     {selectedMaterial ? (language === 'en' ? selectedMaterial.descriptionEn ?? selectedMaterial.description : selectedMaterial.description) : t.selectMaterialHint}
@@ -507,7 +512,10 @@ export default function HomePage() {
                           className={`flex min-h-14 w-full items-center justify-between gap-3 rounded-md px-3 py-2 text-left transition hover:bg-slate-50 ${material.id === selectedMaterial?.id ? 'bg-cyan-50' : ''}`}
                         >
                           <div className="min-w-0">
-                            <div className="truncate text-sm font-black text-slate-950">{material.name} - {material.process.toUpperCase()}</div>
+                            <div className="flex min-w-0 items-center gap-1.5">
+                              {material.isElastic ? <span className="shrink-0 rounded-full bg-orange-100 px-1.5 py-0.5 text-[10px] font-black text-orange-700">{t.elasticMaterial}</span> : null}
+                              <div className="truncate text-sm font-black text-slate-950">{material.name} - {material.process.toUpperCase()}</div>
+                            </div>
                             <div className="mt-1 line-clamp-1 text-xs font-medium text-slate-500" title={language === 'en' ? material.descriptionEn ?? material.description : material.description}>
                               {language === 'en' ? material.descriptionEn ?? material.description : material.description}
                             </div>
