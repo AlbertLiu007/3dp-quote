@@ -96,22 +96,47 @@ function EditableNumber({
   label,
   value,
   suffix,
+  precision,
   onChange,
 }: {
   label: string;
   value: number;
   suffix: string;
+  precision?: number;
   onChange: (value: number) => void;
 }) {
+  const formatEditableValue = (nextValue: number) => {
+    if (!Number.isFinite(nextValue)) return '';
+    return precision === undefined ? String(nextValue) : nextValue.toFixed(precision);
+  };
+  const [draftValue, setDraftValue] = useState(() => formatEditableValue(value));
+  const [focused, setFocused] = useState(false);
+
+  useEffect(() => {
+    if (!focused) setDraftValue(formatEditableValue(value));
+  }, [focused, precision, value]);
+
   return (
     <label className="grid min-w-0 gap-1 text-xs font-medium text-slate-500">
       <span>{label}</span>
       <div className="flex h-10 w-full min-w-0 items-center rounded-md border border-slate-200 bg-white px-1.5">
         <input
           type="number"
-          value={value}
+          value={draftValue}
           step="0.01"
-          onChange={(event) => onChange(Number(event.target.value))}
+          inputMode="decimal"
+          onFocus={() => setFocused(true)}
+          onBlur={() => {
+            setFocused(false);
+            setDraftValue(formatEditableValue(value));
+          }}
+          onChange={(event) => {
+            const nextValue = event.target.value;
+            setDraftValue(nextValue);
+            if (nextValue.trim() === '') return;
+            const parsedValue = Number(nextValue);
+            if (Number.isFinite(parsedValue)) onChange(parsedValue);
+          }}
           className="min-w-0 flex-1 border-0 bg-transparent text-sm font-semibold text-slate-900 outline-none"
         />
         <span className="shrink-0 text-[11px] text-slate-400">{suffix}</span>
@@ -496,8 +521,8 @@ export default function HomePage() {
             </div>
             {selectedMaterial ? (
               <div className="mt-4 grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-x-2 gap-y-3 border-t border-slate-200 pt-4">
-                <EditableNumber label={t.density} value={selectedMaterial.densityGPerCm3} suffix="g/cm³" onChange={(value) => updateMaterial({ densityGPerCm3: value })} />
-                <EditableNumber label={t.materialPricePerG} value={displayCurrencyValue(selectedMaterial.materialPricePerG, language, exchangeRate.rate)} suffix={language === 'zh' ? '元/g' : 'USD/g'} onChange={(value) => updateMaterial({ materialPricePerG: inputCurrencyValue(value, language, exchangeRate.rate) })} />
+                <EditableNumber label={t.density} value={selectedMaterial.densityGPerCm3} suffix="g/cm³" precision={2} onChange={(value) => updateMaterial({ densityGPerCm3: value })} />
+                <EditableNumber label={t.materialPricePerG} value={displayCurrencyValue(selectedMaterial.materialPricePerG, language, exchangeRate.rate)} suffix={language === 'zh' ? '元/g' : 'USD/g'} precision={2} onChange={(value) => updateMaterial({ materialPricePerG: inputCurrencyValue(value, language, exchangeRate.rate) })} />
                 <EditableNumber label={t.surfaceAreaPrice} value={displayCurrencyValue(selectedMaterial.surfaceAreaPricePerMm2, language, exchangeRate.rate)} suffix={language === 'zh' ? '元/mm²' : 'USD/mm²'} onChange={(value) => updateMaterial({ surfaceAreaPricePerMm2: inputCurrencyValue(value, language, exchangeRate.rate) })} />
                 <EditableNumber label={t.materialMinimumCharge} value={displayCurrencyValue(selectedMaterial.materialMinimumCharge, language, exchangeRate.rate)} suffix={language === 'zh' ? '元' : 'USD'} onChange={(value) => updateMaterial({ materialMinimumCharge: inputCurrencyValue(value, language, exchangeRate.rate) })} />
                 <EditableNumber label={t.loss} value={Number((selectedMaterial.failureRate * 100).toFixed(2))} suffix="%" onChange={(value) => updateMaterial({ failureRate: value / 100 })} />
