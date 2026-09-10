@@ -14,6 +14,7 @@ import { cnyToUsd, fallbackExchangeRate, usdToCny, type ExchangeRate } from '@/l
 import { mergeMaterials, resetMaterialOverrides, saveMaterialOverride } from '@/lib/pricing/material-store';
 import type { MaterialProfile, QuoteResult } from '@/lib/pricing/pricing-types';
 import { generateSalesCopy } from '@/lib/sales-copy/generate-sales-copy';
+import { createToolNavigation } from '@/lib/tool-navigation';
 
 declare global {
   interface Window {
@@ -163,10 +164,7 @@ export default function HomePage() {
   const [exchangeRate, setExchangeRate] = useState<ExchangeRate>(fallbackExchangeRate);
 
   const selectedMaterial = materials.find((material) => material.id === selectedMaterialId) ?? materials[0];
-  const navItems = [
-    { label: t.navQuote, href: 'https://unionam.com/quote', active: true },
-    { label: t.navConverter, href: 'https://unionam.com/converter' },
-  ];
+  const navItems = createToolNavigation(t, 'quote');
 
   useEffect(() => {
     if (!modelObject && !error && progressPercent === null) setStatus(t.initialStatus);
@@ -314,7 +312,7 @@ export default function HomePage() {
           languageEn: 'English',
         }}
         logoSrc="/brand/unionam-logo.png"
-        homeHref="https://unionam.com/"
+        homeHref="/"
         navItems={navItems}
         onLanguageChange={setLanguage}
       />

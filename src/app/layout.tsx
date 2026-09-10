@@ -16,7 +16,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang={language === 'en' ? 'en' : 'zh-CN'}>
       <body>
         <Script defer src="https://cloud.umami.is/script.js" data-website-id="05e5f00c-82a3-4dcf-9d5a-b50f434eb92e" />
-        <UnionAMLanguageProvider initialLanguage={language as UnionAMLanguage}>{children}</UnionAMLanguageProvider>
+        <UnionAMLanguageProvider initialLanguage={language as UnionAMLanguage}>
+          {children}
+          <footer className="border-t border-slate-200 bg-white px-5 py-4 text-center text-xs font-semibold text-slate-500 print:hidden">
+            <a
+              href="/privacy"
+              target="_blank"
+              rel="noreferrer"
+              className="transition hover:text-[#0b4f9c]"
+            >
+              隐私政策 / Privacy Policy
+            </a>
+          </footer>
+        </UnionAMLanguageProvider>
       </body>
     </html>
   );
