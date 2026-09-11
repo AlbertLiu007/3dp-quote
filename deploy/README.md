@@ -1,5 +1,13 @@
 # jiyin3d.com quote deployment
 
+> The current application contains the server-side
+> `/quote/api/exchange-rate` route. The static deployment procedure below is a
+> legacy/static-only path and does not provide that route or production
+> application logs. Do not use it for a server-enabled release. See
+> `docs/production-logging.md` for build, process-manager, logging, acceptance,
+> rollback, and LoongCollector requirements. No live infrastructure is changed
+> by this repository documentation.
+
 The quote application is exported as static browser assets under `/quote`.
 Application source code and build dependencies must never be copied below the
 Nginx web root `/var/www/syntek-site`.

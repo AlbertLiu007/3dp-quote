@@ -16,32 +16,6 @@ import type { MaterialProfile, QuoteResult } from '@/lib/pricing/pricing-types';
 import { generateSalesCopy } from '@/lib/sales-copy/generate-sales-copy';
 import { createToolNavigation } from '@/lib/tool-navigation';
 
-declare global {
-  interface Window {
-    umami?: {
-      track: (eventName: string, eventData?: Record<string, string | number | boolean | null>) => void;
-    };
-  }
-}
-
-function trackEvent(eventName: string, eventData?: Record<string, string | number | boolean | null>) {
-  window.umami?.track(eventName, eventData);
-}
-
-function fileSizeBucket(bytes: number) {
-  if (bytes < 5 * 1024 * 1024) return '<5MB';
-  if (bytes < 20 * 1024 * 1024) return '5-20MB';
-  if (bytes < 100 * 1024 * 1024) return '20-100MB';
-  return '100MB+';
-}
-
-function triangleBucket(triangleCount: number) {
-  if (triangleCount < 10_000) return '<10k';
-  if (triangleCount < 100_000) return '10k-100k';
-  if (triangleCount < 1_000_000) return '100k-1M';
-  return '1M+';
-}
-
 function formatNumber(value: number | null | undefined, language: 'zh' | 'en', fallback: string, digits = 1) {
   if (value === null || value === undefined || !Number.isFinite(value)) return fallback;
   return value.toLocaleString(language === 'zh' ? 'zh-CN' : 'en-US', { maximumFractionDigits: digits, minimumFractionDigits: digits });
@@ -270,20 +244,10 @@ export default function HomePage() {
       setMeasurement(measured);
       setProgressPercent(100);
       setStatus(t.completed);
-      trackEvent('quote_model_parse_success', {
-        language,
-        source_format: format,
-        file_size_bucket: fileSizeBucket(file.size),
-        triangle_bucket: triangleBucket(measured.triangleCount),
-      });
     } catch (nextError) {
       setError(nextError instanceof Error ? nextError.message : t.modelParseFailed);
       setProgressPercent(null);
       setStatus(t.parseFailed);
-      trackEvent('quote_model_parse_failed', {
-        language,
-        file_size_bucket: fileSizeBucket(file.size),
-      });
     }
   }
 
@@ -295,7 +259,6 @@ export default function HomePage() {
 
   async function copySalesCopy() {
     if (!salesCopy) return;
-    trackEvent('quote_sales_copy_click', { language, material_id: selectedMaterial?.id ?? null });
     await navigator.clipboard.writeText(`${salesCopy.shortMessage}\n${salesCopy.riskNote}`);
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1400);
@@ -336,7 +299,6 @@ export default function HomePage() {
               <button
                 type="button"
                 onClick={() => {
-                  trackEvent('quote_upload_area_click', { language });
                   fileInputRef.current?.click();
                 }}
                 className="absolute inset-5 flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-slate-300 bg-white/60 text-center transition hover:border-cyan-500 hover:bg-cyan-50/50"
@@ -361,7 +323,6 @@ export default function HomePage() {
             <button
               type="button"
               onClick={() => {
-                trackEvent('quote_select_model_click', { language });
                 fileInputRef.current?.click();
               }}
               className="absolute bottom-4 left-4 inline-flex h-10 items-center gap-2 rounded-md bg-[#0b4f9c] px-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#083f7e]"
@@ -426,7 +387,6 @@ export default function HomePage() {
                   onChange={(event) => {
                     const nextQuantity = Math.max(1, Number(event.target.value));
                     setQuantity(nextQuantity);
-                    trackEvent('quote_quantity_change', { language, quantity: nextQuantity });
                   }}
                   className="h-9 w-20 rounded-md border border-slate-200 px-2 text-sm font-black text-slate-900 outline-none"
                 />
@@ -466,7 +426,6 @@ export default function HomePage() {
                 type="button"
                 onClick={() => {
                   setMaterialOpen((value) => !value);
-                  if (!materialOpen) trackEvent('quote_material_dropdown_open', { language });
                 }}
                 className="flex min-h-16 w-full items-center justify-between gap-3 rounded-lg border border-cyan-500 bg-cyan-50 px-3 py-2 text-left"
               >
@@ -501,11 +460,6 @@ export default function HomePage() {
                           onClick={() => {
                             setSelectedMaterialId(material.id);
                             setMaterialOpen(false);
-                            trackEvent('quote_material_select', {
-                              language,
-                              material_id: material.id,
-                              process: material.process,
-                            });
                           }}
                           className={`flex min-h-14 w-full items-center justify-between gap-3 rounded-md px-3 py-2 text-left transition hover:bg-slate-50 ${material.id === selectedMaterial?.id ? 'bg-cyan-50' : ''}`}
                         >
@@ -539,7 +493,6 @@ export default function HomePage() {
                     const nextMaterials = resetMaterialOverrides();
                     setMaterials(nextMaterials);
                     setSelectedMaterialId(nextMaterials[0]?.id ?? '');
-                    trackEvent('quote_material_reset', { language });
                   }}
                   className="col-span-2 inline-flex h-9 items-center justify-center gap-2 rounded-md border border-[#0b4f9c]/25 text-sm font-bold text-[#0b4f9c] transition hover:bg-[#0b4f9c]/5"
                 >
